@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 import math
 import time
-
+import tf2_ros
 import rclpy
+
 from rclpy.node import Node
 from rclpy.duration import Duration
 
 from geometry_msgs.msg import Twist, Quaternion, TransformStamped
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import BatteryState
-import tf2_ros
+from sensor_msgs.msg import JointState
 
 from vassar_feetech_servo_sdk import ServoController
 
@@ -143,12 +144,7 @@ class FeetechDiffDrive(Node):
 
         # Frames
         self.declare_parameter("base_frame", "base_link")
-        self.declare_parameter("odom_frame", "odom")
-        self.declare_parameter("publish_tf",  True)
-
         self.base_frame = self.get_parameter("base_frame").value
-        self.odom_frame = self.get_parameter("odom_frame").value
-        self.publish_tf = self.get_parameter("publish_tf").value
 
         # Rates
         self.declare_parameter("deadman_timer_sec", 1.0)
@@ -170,17 +166,11 @@ class FeetechDiffDrive(Node):
         self.cmd_w = 0.0 # angular.z (rad/s)
         self.current_mode = DriveMode.STOP
 
-        self.x = 0.0
-        self.y = 0.0
-        self.theta = 0.0
-        self.last_time = self.get_clock().now()
-
         # Topics
         self.battery_pub = self.create_publisher(BatteryState, "battery_state", 5)
-        self.odom_pub = self.create_publisher(Odometry, "odom", 10)
+        self.joint_pub = self.create_publisher(JointState, "joint_states", 10)
 
         self.cmd_sub = self.create_subscription(Twist, "cmd_vel", self.cmd_vel_cb, 10)
-        self.tf_br = tf2_ros.TransformBroadcaster(self)
 
         # Servo Setup
         self.servo_setup()
@@ -206,6 +196,14 @@ class FeetechDiffDrive(Node):
         )
         self.controller.connect()
 
+        #Caching to prevent spam
+        self.prev_left_ticks = None
+        self.prev_right_ticks = None
+
+        self.prev_left_deg = None
+        self.prev_right_deg = None
+        self.prev_rear_deg = None
+
         # Drive servos → velocity / wheel-mode
         self.controller.packet_handler.WheelMode(self.left_drive_id)
         self.controller.packet_handler.WheelMode(self.right_drive_id)
@@ -228,19 +226,34 @@ class FeetechDiffDrive(Node):
 
     def update(self):
         self.update_motors()
-        self.update_odometry()
+        self.publish_joints()
 
     def set_wheel_speeds(self, left_ticks, right_ticks):
-        self.controller.packet_handler.WriteSpec(self.left_drive_id, -left_ticks, self.accel_ticks)
-        self.controller.packet_handler.WriteSpec(self.right_drive_id, right_ticks, self.accel_ticks)
+        if left_ticks != self.prev_left_ticks:
+            self.prev_left_ticks = left_ticks
+            self.controller.packet_handler.WriteSpec(self.left_drive_id, -left_ticks, self.accel_ticks)
+
+        if right_ticks != self.prev_right_ticks:
+            self.prev_right_ticks = right_ticks
+            self.controller.packet_handler.WriteSpec(self.right_drive_id, right_ticks, self.accel_ticks)
 
     def set_steering(self, left_deg, right_deg, rear_deg):
-        positions = {
-            self.left_steer_id: angle_to_left_ticks(left_deg),
-            self.right_steer_id: angle_to_right_ticks(right_deg),
-            self.rear_steer_id: angle_to_rear_ticks(rear_deg),
-        }
-        self.controller.write_position(positions)
+        positions = {}
+
+        if left_deg != self.prev_left_deg:
+            positions[self.left_steer_id] = angle_to_left_ticks(left_deg)
+            self.prev_left_deg = left_deg
+
+        if right_deg != self.prev_right_deg:
+            positions[self.right_steer_id] = angle_to_right_ticks(right_deg)
+            self.prev_right_deg = right_deg
+
+        if rear_deg != self.prev_rear_deg:
+            positions[self.rear_steer_id] = angle_to_rear_ticks(rear_deg)
+            self.prev_rear_deg = rear_deg
+
+        if positions:
+            self.controller.write_position(positions)
 
     def update_motors(self):
 
@@ -376,57 +389,39 @@ class FeetechDiffDrive(Node):
         else:  # ACKERMANN
             apply_ackermann(v_x, omega)
 
-    def update_odometry(self):
+
+    def publish_joints(self):
 
         now = self.get_clock().now()
-        dt  = (now - self.last_time).nanoseconds / 1e9
-        self.last_time = now
 
         speed_l, _, _ = self.controller.packet_handler.ReadSpeed(self.left_drive_id)
         speed_r, _, _ = self.controller.packet_handler.ReadSpeed(self.right_drive_id)
 
-        hz_l = speed_l * self.read_hz_scale
-        hz_r = speed_r * self.read_hz_scale
-
-        v_l = - hz_l * self.circumference
-        v_r = + hz_r * self.circumference
-
-        v = (v_l + v_r) / 2.0
-        w = (v_r - v_l) / self.track_width
-
-        self.x += v * math.cos(self.theta) * dt
-        self.y += v * math.sin(self.theta) * dt
-        self.theta += w * dt
-
-        q = Quaternion()
-        q.x = 0.0
-        q.y = 0.0
-        q.z = math.sin(self.theta / 2.0)
-        q.w = math.cos(self.theta / 2.0)
-
-        now_msg = now.to_msg()
-
-        if self.publish_tf:
-            tf_msg = TransformStamped()
-            tf_msg.header.stamp    = now_msg
-            tf_msg.header.frame_id = self.odom_frame
-            tf_msg.child_frame_id  = self.base_frame
-            tf_msg.transform.translation.x = self.x
-            tf_msg.transform.translation.y = self.y
-            tf_msg.transform.translation.z = 0.0
-            tf_msg.transform.rotation = q
-            self.tf_br.sendTransform(tf_msg)
-
-        odom = Odometry()
-        odom.header.stamp = now_msg
-        odom.header.frame_id= self.odom_frame
-        odom.pose.pose.position.x = self.x
-        odom.pose.pose.position.y = self.y
-        odom.pose.pose.orientation = q
-        odom.child_frame_id= self.base_frame
-        odom.twist.twist.linear.x = v
-        odom.twist.twist.angular.z = w
-        self.odom_pub.publish(odom)
+        # Read steering servo positions (ticks)
+        pos_l_steer, _, _ = self.controller.packet_handler.ReadPos(self.left_steer_id)
+        pos_r_steer, _, _ = self.controller.packet_handler.ReadPos(self.right_steer_id)
+        pos_rear_steer, _, _ = self.controller.packet_handler.ReadPos(self.rear_steer_id)
+        
+        # Convert to standard units
+        # Wheel velocities in rad/s (positive = forward)
+        # Note: left motor is reversed in hardware
+        v_l = -speed_l * self.read_hz_scale * 2.0 * math.pi  # rad/s
+        v_r = speed_r * self.read_hz_scale * 2.0 * math.pi   # rad/s
+        
+        # Steering angles in radians (0 = straight)
+        # TICKS_PER_DEG = 4096/360, STEER_CENTER = 2048
+        steer_l = (pos_l_steer - STEER_CENTER) / TICKS_PER_DEG * math.pi / 180.0
+        steer_r = -(pos_r_steer - STEER_CENTER) / TICKS_PER_DEG * math.pi / 180.0  # mirrored
+        steer_rear = -(pos_rear_steer - STEER_CENTER) / TICKS_PER_DEG * math.pi / 180.0  # mirrored
+        
+        # Publish JointState
+        js = JointState()
+        js.header.stamp = now.to_msg()
+        js.header.frame_id = self.base_frame
+        js.name = ["left_wheel_joint", "right_wheel_joint", "left_steer_joint", "right_steer_joint", "rear_steer_joint"]
+        js.position = [0.0, 0.0, steer_l, steer_r, steer_rear]  # wheel positions not tracked
+        js.velocity = [v_l, v_r, 0.0, 0.0, 0.0]  # steering joints have no velocity
+        self.joint_pub.publish(js)
 
     def update_battery(self):
 
@@ -458,7 +453,6 @@ class FeetechDiffDrive(Node):
         time.sleep(1)
 
         self.controller.disconnect()
-
 
 def main(args=None):
     rclpy.init(args=args)

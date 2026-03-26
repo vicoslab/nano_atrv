@@ -27,4 +27,11 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
+install(PROGRAMS
+  scripts/__init__.py
+  scripts/odom_node.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+
 ament_package()
