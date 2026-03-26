@@ -1,0 +1,12 @@
+[Unit]
+After=NetworkManager.service time-sync.target
+
+[Service]
+Type=simple
+User=vicos
+Environment=ROS_HOME=/home/vicos/.ros
+ExecStart=/home/vicos/colcon_ws/src/nano_atrv/nano_atrv_bringup/systemd/atrv_zenohd.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

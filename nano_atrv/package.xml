@@ -1,0 +1,20 @@
+<package format="3">
+    <name>nano_atrv</name>
+    <version>0.0.1</version>
+    <description>Robot package for the ViCoS Nano ATRV.</description>
+    <maintainer email="vid.rijavec@fri-uni-lj.si">Vid Rijavec</maintainer>
+    <license>MIT</license>
+    <author email="vid.rijavec@fri-uni-lj.si">Vid Rijavec</author>
+
+    <buildtool_depend>ament_cmake_core</buildtool_depend>
+
+    <exec_depend>nano_atrv_bringup</exec_depend>
+    <exec_depend>nano_atrv_description</exec_depend>
+   	<exec_depend>nano_atrv_motor</exec_depend>
+	<exec_depend>nano_atrv_nav</exec_depend>
+
+    <export>
+        <build_type>ament_cmake</build_type>
+    </export>
+
+</package>

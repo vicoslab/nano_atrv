@@ -1,0 +1,16 @@
+<launch>
+
+	<!-- Robot model -->
+	<include file="$(find-pkg-share nano_atrv_description)/launch/description.launch.xml"/>
+	
+	<!-- Wheel control
+	<include file="$(find-pkg-share nano_atrv_motor)/launch/wheel_servo.launch.xml"/> -->
+	
+	<!-- Sensors
+	<include file="$(find-pkg-share nano_atrv_bringup)/launch/astra2.launch.py"/>
+	<include file="$(find-pkg-share nano_atrv_bringup)/launch/lidar.launch.py"/> -->
+
+	<!-- Visualizaton -->
+	<include file="$(find-pkg-share vizanti_server)/launch/vizanti_server.launch.py"/>
+
+</launch>

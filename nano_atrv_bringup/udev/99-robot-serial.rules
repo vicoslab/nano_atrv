@@ -1,0 +1,26 @@
+# /etc/udev/rules.d/99-robot-serial.rules
+#
+# Robot serial device mappings
+#
+# Apply changes with:
+#   sudo cp 99-robot-serial.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload-rules && sudo udevadm trigger
+#
+
+# --- ttyWHEELS ---
+# CH340 USB Serial (QinHeng, vendor 1a86, model 7523)
+# WARNING: This device has NO unique serial number.
+# Identified by USB physical path: xhci-hcd.1, port 0:2:1.0
+# If plugged into a different USB port, this rule will NOT match.
+SUBSYSTEM=="tty", ENV{ID_USB_DRIVER}=="ch341", ENV{ID_PATH}=="platform-xhci-hcd.1-usb-0:2:1.0", \
+    SYMLINK+="ttyWHEELS", MODE="0666"
+
+# --- ttyLIDAR ---
+# Silicon Labs CP2102 (serial: 0001)
+SUBSYSTEM=="tty", ENV{ID_USB_DRIVER}=="cp210x", ENV{ID_USB_SERIAL_SHORT}=="0001", \
+    SYMLINK+="ttyLIDAR", MODE="0666"
+
+# --- ttyARM ---
+# QinHeng CH34x ACM (serial: 5AB9065773)
+SUBSYSTEM=="tty", ENV{ID_USB_DRIVER}=="cdc_acm", ENV{ID_SERIAL_SHORT}=="5AB9065773", \
+    SYMLINK+="ttyARM", MODE="0666"

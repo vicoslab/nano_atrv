@@ -1,0 +1,5 @@
+<launch>
+
+  <node pkg="nano_atrv_motor" exec="feetech_servo_node.py" name="feetech_servo_node" output="screen" />
+
+</launch>
