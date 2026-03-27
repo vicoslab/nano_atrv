@@ -6,11 +6,11 @@
 	<!-- Wheel control
 	<include file="$(find-pkg-share nano_atrv_motor)/launch/wheel_servo.launch.xml"/> -->
 	
-	<!-- Sensors
-	<include file="$(find-pkg-share nano_atrv_bringup)/launch/astra2.launch.py"/>
-	<include file="$(find-pkg-share nano_atrv_bringup)/launch/lidar.launch.py"/> -->
+	<!-- Sensors 
+	<include file="$(find-pkg-share nano_atrv_bringup)/launch/astra2.launch.py"/>-->
+	<include file="$(find-pkg-share nano_atrv_bringup)/launch/lidar.launch.xml"/> 
 
 	<!-- Visualizaton -->
-	<include file="$(find-pkg-share vizanti_server)/launch/vizanti_server.launch.py"/>
+	<include file="$(find-pkg-share vizanti_server)/launch/vizanti_rws.launch.py"/>
 
 </launch>

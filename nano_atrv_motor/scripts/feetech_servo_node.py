@@ -13,6 +13,7 @@ from sensor_msgs.msg import BatteryState
 from sensor_msgs.msg import JointState
 
 from vassar_feetech_servo_sdk import ServoController
+from scservo_sdk import GroupSyncRead
 
 TICKS_PER_DEG = 4096.0 / 360.0
 STEER_CENTER = 2048
@@ -70,8 +71,8 @@ class DriveMode:
     CRAB = "crab"       # pure linear.y   → sideways translation
 
 def classify_mode(v_x, v_y, omega, tol=1e-3):
-    has_x     = _nonzero(v_x,   tol)
-    has_y     = _nonzero(v_y,   tol)
+    has_x = _nonzero(v_x,   tol)
+    has_y = _nonzero(v_y,   tol)
     has_omega = _nonzero(omega, tol)
 
     if not has_x and not has_y and not has_omega:
@@ -196,13 +197,23 @@ class FeetechDiffDrive(Node):
         )
         self.controller.connect()
 
-        #Caching to prevent spam
+        #Caching and group reading to prevent high CPU usage
         self.prev_left_ticks = None
         self.prev_right_ticks = None
 
         self.prev_left_deg = None
         self.prev_right_deg = None
         self.prev_rear_deg = None
+
+        STS_PRESENT_POSITION_L = 56
+        READ_LEN = 4  # position (2) + speed (2)
+
+        self.sync_all = GroupSyncRead(self.controller.packet_handler, STS_PRESENT_POSITION_L, READ_LEN)
+        self.sync_all.addParam(self.left_drive_id)
+        self.sync_all.addParam(self.right_drive_id)
+        self.sync_all.addParam(self.left_steer_id)
+        self.sync_all.addParam(self.right_steer_id)
+        self.sync_all.addParam(self.rear_steer_id)
 
         # Drive servos → velocity / wheel-mode
         self.controller.packet_handler.WheelMode(self.left_drive_id)
@@ -394,13 +405,40 @@ class FeetechDiffDrive(Node):
 
         now = self.get_clock().now()
 
-        speed_l, _, _ = self.controller.packet_handler.ReadSpeed(self.left_drive_id)
-        speed_r, _, _ = self.controller.packet_handler.ReadSpeed(self.right_drive_id)
+        self.sync_all.txRxPacket()
+
+        def get_pos_speed(sid):
+            pos = self.sync_all.getData(sid, 56, 2)
+            speed = self.sync_all.getData(sid, 58, 2)
+            return pos, self.controller.packet_handler.scs_tohost(speed, 15)
+
+        pos_l_drive, speed_l = get_pos_speed(self.left_drive_id)
+        pos_r_drive, speed_r = get_pos_speed(self.right_drive_id)
+
+        pos_l_steer, _ = get_pos_speed(self.left_steer_id)
+        pos_r_steer, _ = get_pos_speed(self.right_steer_id)
+        pos_rear_steer, _ = get_pos_speed(self.rear_steer_id)
+
+        # --- SPEED ---
+        #self.sync_speed.txRxPacket()
+
+        #speed_l = self.sync_speed.getData(self.left_drive_id, STS_PRESENT_SPEED_L, 2)
+        #speed_r = self.sync_speed.getData(self.right_drive_id, STS_PRESENT_SPEED_L, 2)
+
+        # --- POSITION ---
+        #self.sync_pos.txRxPacket()
+
+        #pos_l_steer = self.sync_pos.getData(self.left_steer_id, STS_PRESENT_POSITION_L, 2)
+        #pos_r_steer = self.sync_pos.getData(self.right_steer_id, STS_PRESENT_POSITION_L, 2)
+        #pos_rear_steer = self.sync_pos.getData(self.rear_steer_id, STS_PRESENT_POSITION_L, 2)
+
+        #speed_l, _, _ = self.controller.packet_handler.ReadSpeed(self.left_drive_id)
+        #speed_r, _, _ = self.controller.packet_handler.ReadSpeed(self.right_drive_id)
 
         # Read steering servo positions (ticks)
-        pos_l_steer, _, _ = self.controller.packet_handler.ReadPos(self.left_steer_id)
-        pos_r_steer, _, _ = self.controller.packet_handler.ReadPos(self.right_steer_id)
-        pos_rear_steer, _, _ = self.controller.packet_handler.ReadPos(self.rear_steer_id)
+        #pos_l_steer, _, _ = self.controller.packet_handler.ReadPos(self.left_steer_id)
+        #pos_r_steer, _, _ = self.controller.packet_handler.ReadPos(self.right_steer_id)
+        #pos_rear_steer, _, _ = self.controller.packet_handler.ReadPos(self.rear_steer_id)
         
         # Convert to standard units
         # Wheel velocities in rad/s (positive = forward)

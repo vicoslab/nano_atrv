@@ -23,6 +23,7 @@ find_package(nav_msgs REQUIRED)
 
 install(DIRECTORY
   launch
+  config
   DESTINATION share/${PROJECT_NAME}/
 )
 

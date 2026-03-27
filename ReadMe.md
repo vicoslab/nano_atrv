@@ -16,6 +16,8 @@ pip install vassar-feetech-servo-sdk --break-system-packages
 
 ROS packages:
 ```bash
+sudo apt install ros-jazzy-laser-filters
+
 cd ~/colcon_ws/src
 git clone -b jazzy https://github.com/vicoslab/nano_atrv.git
 

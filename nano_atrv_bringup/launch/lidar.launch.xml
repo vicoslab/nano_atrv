@@ -1,0 +1,20 @@
+<launch>
+
+	<node pkg="ldlidar_stl_ros2" exec="ldlidar_stl_ros2_node" name="ldlidar_stl_ros" output="screen">
+		<param name="product_name" value="LDLiDAR_LD19"/>
+		<param name="topic_name" value="scan"/>
+		<param name="frame_id" value="laser"/>
+		<param name="port_name" value="/dev/ttyLIDAR"/>
+		<param name="port_baudrate" value="230400"/>
+		<param name="laser_scan_dir" value="true"/>
+		<param name="enable_angle_crop_func" value="false"/>
+		<param name="angle_crop_min" value="0.0"/>
+		<param name="angle_crop_max" value="360.0"/>
+	</node>
+
+	<!--/scan to /scan_filtered -->
+	<node pkg="laser_filters" exec="scan_to_scan_filter_chain" name="laser_filter" output="screen">
+		<param from="$(find-pkg-share nano_atrv_bringup)/config/laser_filters.yaml"/>
+  </node>
+	
+</launch>

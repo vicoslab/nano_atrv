@@ -9,57 +9,57 @@ from geometry_msgs.msg import Quaternion, TransformStamped
 import tf2_ros
 
 
-    """ def update_odometry(self):
+""" def update_odometry(self):
 
-        now = self.get_clock().now()
-        dt  = (now - self.last_time).nanoseconds / 1e9
-        self.last_time = now
+    now = self.get_clock().now()
+    dt  = (now - self.last_time).nanoseconds / 1e9
+    self.last_time = now
 
-        speed_l, _, _ = self.controller.packet_handler.ReadSpeed(self.left_drive_id)
-        speed_r, _, _ = self.controller.packet_handler.ReadSpeed(self.right_drive_id)
+    speed_l, _, _ = self.controller.packet_handler.ReadSpeed(self.left_drive_id)
+    speed_r, _, _ = self.controller.packet_handler.ReadSpeed(self.right_drive_id)
 
-        hz_l = speed_l * self.read_hz_scale
-        hz_r = speed_r * self.read_hz_scale
+    hz_l = speed_l * self.read_hz_scale
+    hz_r = speed_r * self.read_hz_scale
 
-        v_l = - hz_l * self.circumference
-        v_r = + hz_r * self.circumference
+    v_l = - hz_l * self.circumference
+    v_r = + hz_r * self.circumference
 
-        v = (v_l + v_r) / 2.0
-        w = (v_r - v_l) / self.track_width
+    v = (v_l + v_r) / 2.0
+    w = (v_r - v_l) / self.track_width
 
-        self.x += v * math.cos(self.theta) * dt
-        self.y += v * math.sin(self.theta) * dt
-        self.theta += w * dt
+    self.x += v * math.cos(self.theta) * dt
+    self.y += v * math.sin(self.theta) * dt
+    self.theta += w * dt
 
-        q = Quaternion()
-        q.x = 0.0
-        q.y = 0.0
-        q.z = math.sin(self.theta / 2.0)
-        q.w = math.cos(self.theta / 2.0)
+    q = Quaternion()
+    q.x = 0.0
+    q.y = 0.0
+    q.z = math.sin(self.theta / 2.0)
+    q.w = math.cos(self.theta / 2.0)
 
-        now_msg = now.to_msg()
+    now_msg = now.to_msg()
 
-        if self.publish_tf:
-            tf_msg = TransformStamped()
-            tf_msg.header.stamp    = now_msg
-            tf_msg.header.frame_id = self.odom_frame
-            tf_msg.child_frame_id  = self.base_frame
-            tf_msg.transform.translation.x = self.x
-            tf_msg.transform.translation.y = self.y
-            tf_msg.transform.translation.z = 0.0
-            tf_msg.transform.rotation = q
-            self.tf_br.sendTransform(tf_msg)
+    if self.publish_tf:
+        tf_msg = TransformStamped()
+        tf_msg.header.stamp    = now_msg
+        tf_msg.header.frame_id = self.odom_frame
+        tf_msg.child_frame_id  = self.base_frame
+        tf_msg.transform.translation.x = self.x
+        tf_msg.transform.translation.y = self.y
+        tf_msg.transform.translation.z = 0.0
+        tf_msg.transform.rotation = q
+        self.tf_br.sendTransform(tf_msg)
 
-        odom = Odometry()
-        odom.header.stamp = now_msg
-        odom.header.frame_id= self.odom_frame
-        odom.pose.pose.position.x = self.x
-        odom.pose.pose.position.y = self.y
-        odom.pose.pose.orientation = q
-        odom.child_frame_id= self.base_frame
-        odom.twist.twist.linear.x = v
-        odom.twist.twist.angular.z = w
-        self.odom_pub.publish(odom) """
+    odom = Odometry()
+    odom.header.stamp = now_msg
+    odom.header.frame_id= self.odom_frame
+    odom.pose.pose.position.x = self.x
+    odom.pose.pose.position.y = self.y
+    odom.pose.pose.orientation = q
+    odom.child_frame_id= self.base_frame
+    odom.twist.twist.linear.x = v
+    odom.twist.twist.angular.z = w
+    self.odom_pub.publish(odom) """
 
 class JointStateToOdom(Node):
     def __init__(self):
