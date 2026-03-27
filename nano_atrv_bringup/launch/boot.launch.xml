@@ -1,10 +1,10 @@
 <launch>
 
-	<!-- Robot model -->
+	<!-- Robot model and odometry-->
 	<include file="$(find-pkg-share nano_atrv_description)/launch/description.launch.xml"/>
 	
-	<!-- Wheel control
-	<include file="$(find-pkg-share nano_atrv_motor)/launch/wheel_servo.launch.xml"/> -->
+	<!-- Wheel control -->
+	<include file="$(find-pkg-share nano_atrv_motor)/launch/wheel_servo.launch.xml"/> 
 	
 	<!-- Sensors 
 	<include file="$(find-pkg-share nano_atrv_bringup)/launch/astra2.launch.py"/>-->

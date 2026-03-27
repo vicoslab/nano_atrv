@@ -1,27 +1,104 @@
 <?xml version="1.0"?>
 <robot name="nano_atrv">
 
-    <link name="base_link"/>
-    <link name="base_footprint"/>
-    <link name="laser"/>
-    <link name="camera_link"/>
+	<link name="base_link"/>
+	<link name="base_footprint"/>
+	<link name="laser"/>
+	<link name="camera_link"/>
 
-    <joint name="base_footprint_to_base_link" type="fixed">
-        <parent link="base_footprint"/>
-        <child link="base_link"/>
-        <origin xyz="0 0 0.18" rpy="0 0 0"/>
-    </joint>
+	<link name="left_wheel"/>
+	<link name="right_wheel"/>
 
-    <joint name="base_link_to_laser" type="fixed">
-        <parent link="base_link"/>
-        <child link="laser"/>
-        <origin xyz="0 0 0.3" rpy="0 3.1415 0"/>
-    </joint>
+	<link name="right_wheel_link"/>
+	<link name="left_wheel_link"/>
+	<link name="rear_wheel_link"/>
 
-    <joint name="base_link_to_camera_link" type="fixed">
-        <parent link="base_link"/>
-        <child link="camera_link"/>
-        <origin xyz="0.07 0 0.35" rpy="0 0 0"/>
-    </joint>
+	<link name="left_steer_link"/>
+	<link name="right_steer_link"/>
+	<link name="rear_steer_link"/>
 
-</robot> 
+	<!-- Static links, add sensors here  -->
+	<joint name="base_footprint_to_base_link" type="fixed">
+		<parent link="base_footprint"/>
+		<child link="base_link"/>
+		<origin xyz="0 0 0.18" rpy="0 0 0"/>
+	</joint>
+
+	<joint name="base_link_to_laser" type="fixed">
+		<parent link="base_link"/>
+		<child link="laser"/>
+		<origin xyz="0 0 0.3" rpy="0 3.1415 0"/>
+	</joint>
+
+	<joint name="base_link_to_camera_link" type="fixed">
+		<parent link="base_link"/>
+		<child link="camera_link"/>
+		<origin xyz="0.07 0 0.35" rpy="0 0 0"/>
+	</joint>
+
+
+	<!-- Steering knuckle/servo mount -->
+	<!--(wheelbase/2,  track/2,  wheel height) -->
+
+	<joint name="base_link_to_left_steer" type="fixed">
+		<parent link="base_link"/>
+		<child link="left_steer_link"/>
+		<origin xyz="0.175 0.1775 -0.1" rpy="0 0 0"/>
+	</joint>
+
+	<joint name="base_link_to_right_steer" type="fixed">
+		<parent link="base_link"/>
+		<child link="right_steer_link"/>
+		<origin xyz="0.175 -0.1775 -0.1" rpy="0 0 0"/>
+	</joint>
+
+	<joint name="base_link_to_rear_steer" type="fixed">
+		<parent link="base_link"/>
+		<child link="rear_steer_link"/>
+		<origin xyz="-0.175 0 -0.1" rpy="0 0 0"/>
+	</joint>
+
+
+	<!-- Revolute steers around Z, robot_state_publisher will set this from /joint_states -->
+	<joint name="left_steer_joint" type="revolute">
+		<parent link="left_steer_link"/>
+		<child link="left_wheel_link"/>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit lower="-1.57" upper="1.57" effort="10" velocity="2"/>
+	</joint>
+
+	<joint name="right_steer_joint" type="revolute">
+		<parent link="right_steer_link"/>
+		<child link="right_wheel_link"/>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit lower="-1.57" upper="1.57" effort="10" velocity="2"/>
+	</joint>
+
+	<joint name="rear_steer_joint" type="revolute">
+		<parent link="rear_steer_link"/>
+		<child link="rear_wheel_link"/>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<axis xyz="0 0 1"/>
+		<limit lower="-3.1415" upper="3.1415" effort="10" velocity="2"/>
+	</joint>
+
+
+	<!-- Wheel spin -->
+	<joint name="left_wheel_joint" type="continuous">
+		<parent link="left_wheel_link"/>
+		<child link="left_wheel"/>
+		<origin xyz="0 0.08 0" rpy="0 0 1.5708"/>
+		<axis xyz="-1 0 0"/>
+	</joint>
+
+	<joint name="right_wheel_joint" type="continuous">
+		<parent link="right_wheel_link"/>
+		<child link="right_wheel"/>
+		<origin xyz="0 -0.08 0" rpy="0 0 -1.5708"/>
+		<axis xyz="1 0 0"/>
+	</joint>
+
+
+</robot>

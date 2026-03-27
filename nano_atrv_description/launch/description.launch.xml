@@ -1,5 +1,12 @@
 <launch>
+
+    <!--publish static and revolute joints based on /joint_states -->
     <node pkg="robot_state_publisher" exec="robot_state_publisher" name="robot_state_publisher">
         <param name="robot_description" value="$(command 'xacro $(find-pkg-share nano_atrv_description)/urdf/nano_atrv.urdf')" />
     </node>
+
+    <!--publish odom -> base_link transform based on /joint_states -->
+    <node pkg="nano_atrv_description" exec="odom_node.py" name="odom_node" output="screen" />
+
+
 </launch>

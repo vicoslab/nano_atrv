@@ -23,8 +23,8 @@ LEFT_STEER_MIN  = 870    # most-clockwise position (robot-frame: steer right)
 LEFT_STEER_MAX  = 2488   # most-counter-clockwise  (steer left)
 RIGHT_STEER_MIN = 1618   # most-clockwise          (steer left  for right wheel)
 RIGHT_STEER_MAX = 3214   # most-counter-clockwise  (steer right)
-REAR_STEER_MIN  = 1024   # –90°
-REAR_STEER_MAX  = 3072   # +90°
+REAR_STEER_MIN  = 0
+REAR_STEER_MAX  = 4096
 
 def deg_to_ticks(degrees):
     """Convert an angle offset in degrees to a tick offset (signed)."""
@@ -67,7 +67,7 @@ def _nonzero(val, tol=1e-3):
 class DriveMode:
     STOP = "stop"
     SPIN = "spin"       # pure angular.z  → spin in place
-    ACKERMANN = "ackermann"  # linear.x (+ optional angular.z) → forward/curve
+    DIFFDRIVE = "diffdrive"  # linear.x (+ optional angular.z) → forward/curve
     CRAB = "crab"       # pure linear.y   → sideways translation
 
 def classify_mode(v_x, v_y, omega, tol=1e-3):
@@ -81,8 +81,7 @@ def classify_mode(v_x, v_y, omega, tol=1e-3):
         return DriveMode.CRAB
     if has_omega and not has_x and not has_y:
         return DriveMode.SPIN
-    # Everything else (including mixed x+omega) uses Ackermann
-    return DriveMode.ACKERMANN
+    return DriveMode.DIFFDRIVE
 
 class FeetechDiffDrive(Node):
     def __init__(self):
@@ -124,7 +123,7 @@ class FeetechDiffDrive(Node):
         # Drive limits
         self.declare_parameter("max_velocity_ticks", 65)
         self.declare_parameter("accel_ticks", 100)
-        self.declare_parameter("spin_radius_threshold", 0.15)
+        self.declare_parameter("spin_radius_threshold", 0.05)
 
         self.max_velocity_ticks = self.get_parameter("max_velocity_ticks").value
         self.accel_ticks = self.get_parameter("accel_ticks").value
@@ -249,6 +248,12 @@ class FeetechDiffDrive(Node):
             self.controller.packet_handler.WriteSpec(self.right_drive_id, right_ticks, self.accel_ticks)
 
     def set_steering(self, left_deg, right_deg, rear_deg):
+        """
+        Set steering angles for front and rear wheels.
+        
+        For the rear freewheeling axle: angles that differ by 180° are equivalent.
+        Chooses the shortest path considering 180° symmetry.
+        """
         positions = {}
 
         if left_deg != self.prev_left_deg:
@@ -260,8 +265,28 @@ class FeetechDiffDrive(Node):
             self.prev_right_deg = right_deg
 
         if rear_deg != self.prev_rear_deg:
-            positions[self.rear_steer_id] = angle_to_rear_ticks(rear_deg)
-            self.prev_rear_deg = rear_deg
+            if self.prev_rear_deg is None:
+                positions[self.rear_steer_id] = angle_to_rear_ticks(rear_deg)
+                self.prev_rear_deg = rear_deg
+            else:
+                LIMIT_MIN = -179.0
+                LIMIT_MAX = 179.0
+
+                # Identify 180-degree mirrors and normalize to stay within a reasonable wrapping range
+                candidates = [rear_deg, rear_deg + 180, rear_deg - 180]
+                
+                # Filter candidates that are actually reachable by the hardware
+                valid_candidates = [c for c in candidates if LIMIT_MIN <= c <= LIMIT_MAX]
+
+                if not valid_candidates:
+                    chosen_physical = max(LIMIT_MIN, min(LIMIT_MAX, rear_deg))
+                else:
+                    # Pick the candidate closest to the CURRENT physical position
+                    chosen_physical = min(valid_candidates, key=lambda c: abs(c - self.prev_rear_deg))
+
+                if abs(chosen_physical - self.prev_rear_deg) > 0.5:
+                    positions[self.rear_steer_id] = angle_to_rear_ticks(chosen_physical)
+                    self.prev_rear_deg = chosen_physical
 
         if positions:
             self.controller.write_position(positions)
@@ -321,41 +346,24 @@ class FeetechDiffDrive(Node):
             )
             self.set_wheel_speeds(left_ticks, right_ticks)
 
-        def apply_ackermann(v_x, omega):
+        def apply_diff_drive(v_x, omega):
             """
-            Standard Ackermann steering + active rear caster.
+            Standard diff drive steering + active rear caster that matches the turn radius.
             Turn radius R = v_x / omega  (signed; infinity when omega == 0).
-            For each front wheel the Ackermann angle is:
-                delta = atan( wheelbase / (R ± track/2) )
-            The rear caster angle is:
-                delta_rear = atan( rear_caster_offset / R )
             """
             if _nonzero(omega):
                 R = v_x / omega   # signed turn radius (m)
-                # Guard against very small R (handled upstream, but be safe)
+
+                # Guard against very small R
                 if abs(R) < self.spin_radius_threshold:
                     apply_spin(omega)
                     return
 
-                # Front Ackermann angles
-                left_deg  = math.degrees(
-                    math.atan(self.wheelbase / (R - self.track_width / 2.0))
-                )
-                right_deg = math.degrees(
-                    math.atan(self.wheelbase / (R + self.track_width / 2.0))
-                )
-
-                # Rear caster angle
-                rear_deg = math.degrees(
-                    math.atan(self.rear_caster_offset / R)
-                )
+                rear_deg = math.degrees(math.atan(self.rear_caster_offset / R))
+                self.set_steering(0, 0, rear_deg)
             else:
-                # Pure straight line – all steering centred
-                left_deg = right_deg = rear_deg = 0.0
+                self.set_steering(0, 0, 0)
 
-            self.set_steering(0, 0, rear_deg)
-
-            # Differential drive on the rear (existing logic)
             v_l = v_x - (omega * self.track_width / 2.0)
             v_r = v_x + (omega * self.track_width / 2.0)
             left_ticks, right_ticks = speed_to_ticks(v_l, v_r)
@@ -388,77 +396,58 @@ class FeetechDiffDrive(Node):
         self.current_mode = mode
 
         if mode == DriveMode.STOP:
-            self.set_steering(0.0, 0.0, 0.0)
             self.set_wheel_speeds(0, 0)
-
         elif mode == DriveMode.SPIN:
             apply_spin(omega)
-
         elif mode == DriveMode.CRAB:
             apply_crab(v_y)
-
-        else:  # ACKERMANN
-            apply_ackermann(v_x, omega)
+        else:
+            apply_diff_drive(v_x, omega)
 
 
     def publish_joints(self):
 
-        now = self.get_clock().now()
+        TICKS_TO_RAD = 1.0 / TICKS_PER_DEG * math.pi / 180.0
 
+        now = self.get_clock().now()
         self.sync_all.txRxPacket()
 
         def get_pos_speed(sid):
             pos = self.sync_all.getData(sid, 56, 2)
             speed = self.sync_all.getData(sid, 58, 2)
-            return pos, self.controller.packet_handler.scs_tohost(speed, 15)
 
-        pos_l_drive, speed_l = get_pos_speed(self.left_drive_id)
-        pos_r_drive, speed_r = get_pos_speed(self.right_drive_id)
+            pos_rad = (pos - STEER_CENTER) * TICKS_TO_RAD
+            speed_rad_s = self.controller.packet_handler.scs_tohost(speed, 15) * self.read_hz_scale * 2.0 * math.pi 
 
-        pos_l_steer, _ = get_pos_speed(self.left_steer_id)
-        pos_r_steer, _ = get_pos_speed(self.right_steer_id)
-        pos_rear_steer, _ = get_pos_speed(self.rear_steer_id)
+            return pos_rad, speed_rad_s
 
-        # --- SPEED ---
-        #self.sync_speed.txRxPacket()
+        left_drive_pos, left_drive_spd = get_pos_speed(self.left_drive_id)
+        right_drive_pos, right_drive_spd = get_pos_speed(self.right_drive_id)
 
-        #speed_l = self.sync_speed.getData(self.left_drive_id, STS_PRESENT_SPEED_L, 2)
-        #speed_r = self.sync_speed.getData(self.right_drive_id, STS_PRESENT_SPEED_L, 2)
+        left_steer_pos, left_steer_spd = get_pos_speed(self.left_steer_id)
+        right_steer_pos, right_steer_spd = get_pos_speed(self.right_steer_id)
+        rear_steer_pos, rear_steer_spd = get_pos_speed(self.rear_steer_id)
 
-        # --- POSITION ---
-        #self.sync_pos.txRxPacket()
-
-        #pos_l_steer = self.sync_pos.getData(self.left_steer_id, STS_PRESENT_POSITION_L, 2)
-        #pos_r_steer = self.sync_pos.getData(self.right_steer_id, STS_PRESENT_POSITION_L, 2)
-        #pos_rear_steer = self.sync_pos.getData(self.rear_steer_id, STS_PRESENT_POSITION_L, 2)
-
-        #speed_l, _, _ = self.controller.packet_handler.ReadSpeed(self.left_drive_id)
-        #speed_r, _, _ = self.controller.packet_handler.ReadSpeed(self.right_drive_id)
-
-        # Read steering servo positions (ticks)
-        #pos_l_steer, _, _ = self.controller.packet_handler.ReadPos(self.left_steer_id)
-        #pos_r_steer, _, _ = self.controller.packet_handler.ReadPos(self.right_steer_id)
-        #pos_rear_steer, _, _ = self.controller.packet_handler.ReadPos(self.rear_steer_id)
-        
-        # Convert to standard units
-        # Wheel velocities in rad/s (positive = forward)
-        # Note: left motor is reversed in hardware
-        v_l = -speed_l * self.read_hz_scale * 2.0 * math.pi  # rad/s
-        v_r = speed_r * self.read_hz_scale * 2.0 * math.pi   # rad/s
-        
-        # Steering angles in radians (0 = straight)
-        # TICKS_PER_DEG = 4096/360, STEER_CENTER = 2048
-        steer_l = (pos_l_steer - STEER_CENTER) / TICKS_PER_DEG * math.pi / 180.0
-        steer_r = -(pos_r_steer - STEER_CENTER) / TICKS_PER_DEG * math.pi / 180.0  # mirrored
-        steer_rear = -(pos_rear_steer - STEER_CENTER) / TICKS_PER_DEG * math.pi / 180.0  # mirrored
-        
-        # Publish JointState
         js = JointState()
         js.header.stamp = now.to_msg()
         js.header.frame_id = self.base_frame
         js.name = ["left_wheel_joint", "right_wheel_joint", "left_steer_joint", "right_steer_joint", "rear_steer_joint"]
-        js.position = [0.0, 0.0, steer_l, steer_r, steer_rear]  # wheel positions not tracked
-        js.velocity = [v_l, v_r, 0.0, 0.0, 0.0]  # steering joints have no velocity
+        js.position = [
+            left_drive_pos,
+            right_drive_pos,
+            left_steer_pos, 
+            right_steer_pos,
+            rear_steer_pos
+        ]
+
+        js.velocity = [
+            left_drive_spd,
+            right_drive_spd, 
+            left_steer_spd,
+            right_steer_spd,
+            rear_steer_spd
+        ]
+
         self.joint_pub.publish(js)
 
     def update_battery(self):
