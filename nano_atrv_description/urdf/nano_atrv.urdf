@@ -2,6 +2,7 @@
 <robot name="nano_atrv">
 
 	<link name="base_link"/>
+	<link name="base_link_arm"/>
 	<link name="base_footprint"/>
 	<link name="laser"/>
 	<link name="camera_link"/>
@@ -36,6 +37,11 @@
 		<origin xyz="0.07 0 0.35" rpy="0 0 0"/>
 	</joint>
 
+	<joint name="base_link_to_arm" type="fixed">
+		<parent link="base_link"/>
+		<child link="base_link_arm"/>
+		<origin xyz="0.145 0 0" rpy="0 0 0"/>
+	</joint>
 
 	<!-- Steering knuckle/servo mount -->
 	<!--(wheelbase/2,  track/2,  wheel height) -->

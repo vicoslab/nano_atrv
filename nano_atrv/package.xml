@@ -12,6 +12,7 @@
     <exec_depend>nano_atrv_description</exec_depend>
    	<exec_depend>nano_atrv_motor</exec_depend>
 	<exec_depend>nano_atrv_nav</exec_depend>
+	<exec_depend>nano_atrv_arm</exec_depend>
 
     <export>
         <build_type>ament_cmake</build_type>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Package path and URDF file -->
+    <let name="pkg_path" value="$(find-pkg-share nano_atrv_arm)"/>
+    <let name="urdf_file" value="$(var pkg_path)/urdf/so101_new_calib.urdf"/>
+    
+    <!-- Robot description parameter -->
+    <let name="robot_description" value="$(command 'xacro $(var urdf_file)')"/>
+
+    <!-- Robot State Publisher Node -->
+    <node name="arm_robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher" output="screen">
+        <param name="robot_description" value="$(var robot_description)"/>
+        <remap from="/joint_states" to="/joint_states_arm"/>
+    </node>
+
+    <!-- Joint State Node -->
+    <node name="feetech_arm_servo_node" pkg="nano_atrv_arm" exec="feetech_arm_servo_node.py" output="screen"/>
+
+
+     <!-- IK demo node -->
+    <node name="ikpy_commander_node" pkg="nano_atrv_arm" exec="ikpy_commander_node.py" output="screen"/>
+    
+</launch>

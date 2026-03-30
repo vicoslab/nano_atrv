@@ -8,10 +8,10 @@ An articulated diff drive robot for robotics research.
 
 To set up the Pi 5, follow the [ubuntu image customization guide](nano_atrv/docs//pi_setup.md).
 
-Feetech servo python lib:
+Python libs that aren't on apt:
 ```bash
 sudo apt install python3-pip
-pip install vassar-feetech-servo-sdk --break-system-packages
+pip install vassar-feetech-servo-sdk pymunk ikpy --break-system-packages
 ```
 
 ROS packages:

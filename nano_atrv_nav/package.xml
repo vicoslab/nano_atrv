@@ -1,0 +1,24 @@
+<package format="3">
+    <name>nano_atrv_nav</name>
+    <version>0.0.1</version>
+    <description>SLAM and navigation package for the ViCoS Nano ATRV.</description>
+    <maintainer email="vid.rijavec@fri-uni-lj.si">Vid Rijavec</maintainer>
+    <license>MIT</license>
+    <author email="vid.rijavec@fri-uni-lj.si">Vid Rijavec</author>
+
+    <depend>rclpy</depend>
+    <depend>rclcpp</depend>
+    <depend>std_srvs</depend>
+    <depend>tf2_msgs</depend>
+    <depend>geometry_msgs</depend>
+    <depend>std_msgs</depend>
+
+    <buildtool_depend>ament_cmake</buildtool_depend>
+    <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+    <exec_depend>ros2launch</exec_depend>
+
+    <export>
+    <build_type>ament_cmake</build_type>
+    </export>
+</package>
