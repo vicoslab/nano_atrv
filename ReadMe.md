@@ -6,7 +6,7 @@ An articulated diff drive robot for robotics research.
 
 ## Installation
 
-To set up the Pi 5, follow the [ubuntu image customization guide](nano_atrv/docs//pi_setup.md).
+To set up the Pi 5, follow the [ubuntu image customization guide](nano_atrv/docs/pi_setup.md).
 
 Python libs that aren't on apt:
 ```bash

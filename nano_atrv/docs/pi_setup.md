@@ -123,6 +123,14 @@ sudo nmcli con up "NanoATRV"
 
 Check the network setup with `nmcli con show`.
 
+Edit `/etc/NetworkManager/conf.d/default-wifi-powersave-on.conf` and disable power saving:
+
+```bash
+[connection]
+wifi.powersave = 2
+```
+
+
 ### Install ROS 2 Jazzy
 
 Follow the official guide [here](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html).
