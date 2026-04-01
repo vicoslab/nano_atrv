@@ -26,10 +26,10 @@ TARGET_FRAME = "base_link_arm"
 GRIPPER_LINK = "gripper_link"
 
 GRIPPER_OPEN = 1.0
-GRIPPER_CLOSED = -0.1
+GRIPPER_CLOSED = -0.2
 
 # z positions relative to base_link_arm
-Z_FLOOR = -0.09
+Z_FLOOR = -0.1
 Z_ABOVE = 0.1
 
 # how close gripper_link must get before we consider a move done

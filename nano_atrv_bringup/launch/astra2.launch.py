@@ -10,6 +10,9 @@ import os
 
 
 def generate_launch_description():
+
+    FPS = "5"
+
     # Declare arguments
     args = [
         DeclareLaunchArgument("camera_name", default_value="camera"),
@@ -26,7 +29,7 @@ def generate_launch_description():
         DeclareLaunchArgument("connection_delay", default_value="100"),
         DeclareLaunchArgument("color_width", default_value="640"),
         DeclareLaunchArgument("color_height", default_value="480"),
-        DeclareLaunchArgument("color_fps", default_value="10"),
+        DeclareLaunchArgument("color_fps", default_value=FPS),
         DeclareLaunchArgument("color_format", default_value="MJPG"),
         DeclareLaunchArgument("enable_color", default_value="true"),
         DeclareLaunchArgument("color_flip", default_value="false"),
@@ -41,7 +44,7 @@ def generate_launch_description():
         DeclareLaunchArgument("color_white_balance", default_value="-1"),
         DeclareLaunchArgument("depth_width", default_value="400"),
         DeclareLaunchArgument("depth_height", default_value="300"),
-        DeclareLaunchArgument("depth_fps", default_value="10"),
+        DeclareLaunchArgument("depth_fps", default_value=FPS),
         DeclareLaunchArgument("depth_format", default_value="RLE"),
         DeclareLaunchArgument("enable_depth", default_value="true"),
         DeclareLaunchArgument("depth_flip", default_value="false"),
@@ -49,7 +52,7 @@ def generate_launch_description():
         DeclareLaunchArgument("depth_camera_info_qos", default_value="default"),
         DeclareLaunchArgument("ir_width", default_value="400"),
         DeclareLaunchArgument("ir_height", default_value="300"),
-        DeclareLaunchArgument("ir_fps", default_value="10"),
+        DeclareLaunchArgument("ir_fps", default_value=FPS),
         DeclareLaunchArgument("ir_format", default_value="Y8"),
         DeclareLaunchArgument("enable_ir", default_value="true"),
         DeclareLaunchArgument("ir_flip", default_value="false"),
@@ -61,11 +64,11 @@ def generate_launch_description():
         DeclareLaunchArgument("ir_gain", default_value="-1"),
         DeclareLaunchArgument("ir_brightness", default_value="-1"),
         DeclareLaunchArgument("enable_sync_output_accel_gyro", default_value="true"),
-        DeclareLaunchArgument("enable_accel", default_value="false"),
-        DeclareLaunchArgument("accel_rate", default_value="100hz"),
+        DeclareLaunchArgument("enable_accel", default_value="true"),
+        DeclareLaunchArgument("accel_rate", default_value="30hz"),
         DeclareLaunchArgument("accel_range", default_value="4g"),
-        DeclareLaunchArgument("enable_gyro", default_value="false"),
-        DeclareLaunchArgument("gyro_rate", default_value="100hz"),
+        DeclareLaunchArgument("enable_gyro", default_value="true"),
+        DeclareLaunchArgument("gyro_rate", default_value="30hz"),
         DeclareLaunchArgument("gyro_range", default_value="1000dps"),
         DeclareLaunchArgument("linear_accel_cov", default_value="0.01"),
         DeclareLaunchArgument("angular_vel_cov", default_value="0.01"),
