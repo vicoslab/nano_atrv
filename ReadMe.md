@@ -4,6 +4,9 @@
 
 An articulated diff drive robot for robotics research.
 
+<img width="1000" height="572" alt="image" src="https://github.com/user-attachments/assets/cd57a336-9786-46e5-b9fe-c42f6f51e54d" />
+
+
 ## Installation
 
 To set up the Pi 5, follow the [ubuntu image customization guide](nano_atrv/docs/pi_setup.md).
@@ -16,8 +19,6 @@ pip install vassar-feetech-servo-sdk pymunk ikpy --break-system-packages
 
 ROS packages:
 ```bash
-sudo apt install ros-jazzy-laser-filters
-
 cd ~/colcon_ws/src
 git clone -b jazzy https://github.com/vicoslab/nano_atrv.git
 
@@ -85,4 +86,4 @@ Modified USB port_id: 5-1
 
 ### Run
 
-If everything is set up correctly, there should be systemd services running that start the zenoh router and the nano_atrv_bringup boot launch. See [the systemd doc about that](nano_atrv/docs/systemd_setup.md).
+If everything is set up correctly, there should be a systemd service running that starts the nano_atrv_bringup boot launch. See [the systemd doc about that](nano_atrv/docs/systemd_services.md).
