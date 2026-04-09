@@ -163,13 +163,13 @@ class IKCommander(Node):
 			self._wait_for_arrival(target)
 
 			self.get_logger().info("Place: lowering to floor")
-			target = self._move_to(xy, Z_FLOOR, GRIPPER_CLOSED)
+			target = self._move_to(xy, Z_FLOOR+0.02, GRIPPER_CLOSED)
 			if target is None:
 				return
 			self._wait_for_arrival(target)
 
 			self.get_logger().info("Place: opening gripper")
-			target = self._move_to(xy, Z_FLOOR, GRIPPER_OPEN)
+			target = self._move_to(xy, Z_FLOOR+0.02, GRIPPER_OPEN)
 			if target is None:
 				return
 			self._wait_for_arrival(target)

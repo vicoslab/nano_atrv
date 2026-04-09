@@ -1,32 +1,6 @@
 # Systemd Setup
 
-To start the robot when it boots, there are two services that start the zenoh router and the robot nodes. Both should be active and running.
-
-```bash
-sudo systemctl status atrv_zenohd.service -n 5000
-● atrv_zenohd.service
-     Loaded: loaded (/etc/systemd/system/atrv_zenohd.service; enabled; preset: enabled)
-     Active: active (running) since Thu 2026-03-26 13:57:26 CET; 13min ago
-   Main PID: 14753 (atrv_zenohd.sh)
-      Tasks: 11 (limit: 9064)
-     Memory: 23.4M (peak: 23.9M)
-        CPU: 987ms
-     CGroup: /system.slice/atrv_zenohd.service
-             ├─14753 /bin/bash /home/vicos/colcon_ws/src/nano_atrv/nano_atrv_bringup/systemd/atrv_zenohd.sh
-             ├─14775 /usr/bin/python3 /opt/ros/jazzy/bin/ros2 run rmw_zenoh_cpp rmw_zenohd
-             └─14778 /opt/ros/jazzy/lib/rmw_zenoh_cpp/rmw_zenohd
-
-Mar 26 13:57:26 mrcrabs systemd[1]: Started atrv_zenohd.service.
-Mar 26 13:57:27 mrcrabs atrv_zenohd.sh[14778]: 2026-03-26T12:57:27.792478Z  INFO ThreadId(02) zenoh::net::runtime: Using ZID: 762f8e84ca714ae50fc18c690bd78878
-Mar 26 13:57:27 mrcrabs atrv_zenohd.sh[14778]: 2026-03-26T12:57:27.793388Z  INFO ThreadId(02) zenoh::net::runtime::orchestrator: Zenoh can be reached at: tcp/[2001:1470:fffd:3238:5ed2:7e2b:703:12ef]:7447
-Mar 26 13:57:27 mrcrabs atrv_zenohd.sh[14778]: 2026-03-26T12:57:27.793404Z  INFO ThreadId(02) zenoh::net::runtime::orchestrator: Zenoh can be reached at: tcp/[2001:1470:fffd:3238:6ca2:2298:d087:b23f]:7447
-Mar 26 13:57:27 mrcrabs atrv_zenohd.sh[14778]: 2026-03-26T12:57:27.793410Z  INFO ThreadId(02) zenoh::net::runtime::orchestrator: Zenoh can be reached at: tcp/[fe80::52fb:a73f:2112:2702]:7447
-Mar 26 13:57:27 mrcrabs atrv_zenohd.sh[14778]: 2026-03-26T12:57:27.793416Z  INFO ThreadId(02) zenoh::net::runtime::orchestrator: Zenoh can be reached at: tcp/[fe80::bf7a:e64a:454a:df14]:7447
-Mar 26 13:57:27 mrcrabs atrv_zenohd.sh[14778]: 2026-03-26T12:57:27.793423Z  INFO ThreadId(02) zenoh::net::runtime::orchestrator: Zenoh can be reached at: tcp/10.32.38.103:7447
-Mar 26 13:57:27 mrcrabs atrv_zenohd.sh[14778]: 2026-03-26T12:57:27.793428Z  INFO ThreadId(02) zenoh::net::runtime::orchestrator: Zenoh can be reached at: tcp/10.42.0.1:7447
-Mar 26 13:57:28 mrcrabs atrv_zenohd.sh[14778]: Started Zenoh router with id 762f8e84ca714ae50fc18c690bd78878
-
-```
+To start the robot's ROS nodes when it boots, there's a service that runs the boot.launch.xml:
 
 ```bash
 sudo systemctl status atrv_boot.service -n 5000
@@ -70,22 +44,22 @@ Mar 26 14:04:36 mrcrabs atrv_boot.sh[15352]: [INFO] [ldlidar_stl_ros2_node-9]: p
 
 ## Some example patterns:
 
-Restart the router:
-
-```bash
-sudo systemctl restart atrv_zenohd.service
-```
-
-Restart the main launch file to apply any changes to boot.launch.xml:
+Restart the main launch file to apply any changes to boot.launch.xml or ros_env.sh:
 
 ```bash
 sudo systemctl restart atrv_boot.service
 ```
 
-Disable the boot service persistently to run something else:
+Disable service temporarily so the launch can be ran manually:
 
 ```bash
-sudo systemctl stop atrv_zenohd.service #stops just until a reboot
-sudo systemctl disable atrv_zenohd.service  #stops the service from launching at boot
-ros2 launch etc.
+sudo systemctl stop atrv_boot.service
+sudo systemctl disable atrv_boot.service
+```
+
+Enable service and start:
+
+```bash
+sudo systemctl enable atrv_boot.service
+sudo systemctl start atrv_boot.service
 ```

@@ -3,6 +3,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
+from std_msgs.msg import Empty
 
 import math
 import time
@@ -48,6 +49,8 @@ class ServoJointCommander(Node):
 		self.publisher = self.create_publisher(JointState, '/joint_states_arm', 10)
 		self.subscription = self.create_subscription(JointState, '/joint_commands_arm', self.command_callback, 10)
 
+		self.stow_sub = self.create_subscription(Empty, '/stow_arm', self.stow_callback, 10)
+
 		# Servo controller setup
 		self.controller = ServoController(
 			servo_ids=SERVO_IDS,
@@ -69,6 +72,9 @@ class ServoJointCommander(Node):
 		self.timer = self.create_timer(0.02, self.update)  # 50 Hz
 
 		self.set_torque(True)
+		self.set_pose("stowed")
+
+	def stow_callback(self, msg):
 		self.set_pose("stowed")
 
 	def set_pose(self, pose):

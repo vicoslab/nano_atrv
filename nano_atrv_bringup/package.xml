@@ -12,6 +12,7 @@
     <depend>tf2_msgs</depend>
     <depend>geometry_msgs</depend>
     <depend>std_msgs</depend>
+    <depend>laser_filters</depend>
 
     <buildtool_depend>ament_cmake</buildtool_depend>
     <buildtool_depend>ament_cmake_python</buildtool_depend>

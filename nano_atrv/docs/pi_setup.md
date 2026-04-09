@@ -142,32 +142,25 @@ rosdep update
 mkdir -p ~/colcon_ws/src
 ```
 
+Copy env setup script and 
+```bash
+cp nano_atrv/nano_atrv_bringup/config/cyclonedds.xml ~/cyclonedds.xml
+cp nano_atrv/nano_atrv_bringup/config/ros_env.sh ~/ros_env.sh
+```
+
+Setup startup systemd service:
+```bash
+sudo cp /home/vicos/colcon_ws/src/nano_atrv/nano_atrv_bringup/systemd/atrv_boot.service /etc/systemd/system/
+sudo systemctl enable atrv_boot.service
+sudo systemctl start atrv_boot.service
+```
+
 Add to `~/.bashrc`
 ```bash
 export PROMPT_COMMAND='history -a'
 alias colcon_make='colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release --parallel-workers 2'
 alias ros_restart='ros2 daemon stop; ros2 daemon start'
 
-export ROS_DOMAIN_ID=55
-export RMW_IMPLEMENTATION=rmw_zenoh_cpp
-source /opt/ros/jazzy/setup.bash
-source /home/vicos/colcon_ws/install/setup.bash
-```
-
-## Setup Startup Systemd Services
-
-### Zenoh Router
-
-```bash
-sudo cp /home/vicos/colcon_ws/src/nano_atrv/nano_atrv_bringup/systemd/atrv_zenohd.service /etc/systemd/system/
-sudo systemctl enable atrv_zenohd.service
-sudo systemctl start atrv_zenohd.service
-```
-
-### Robot Bringup
-
-```bash
-sudo cp /home/vicos/colcon_ws/src/nano_atrv/nano_atrv_bringup/systemd/atrv_boot.service /etc/systemd/system/
-sudo systemctl enable atrv_boot.service
-sudo systemctl start atrv_boot.service
+#common ros environment setup for systemd and terminal nodes
+source /home/vicos/ros_env.sh
 ```
