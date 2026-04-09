@@ -21,7 +21,7 @@ class JointStateToOdom(Node):
 		self.declare_parameter("track_width", 0.355)
 		self.declare_parameter("wheelbase", 0.35)
 		self.declare_parameter("rear_caster_offset", 0.175) 
-		self.declare_parameter("base_frame", "base_link")
+		self.declare_parameter("base_frame", "base_footprint")
 		self.declare_parameter("odom_frame", "odom")
 		self.declare_parameter("left_wheel_joint", "left_wheel_joint")
 		self.declare_parameter("right_wheel_joint", "right_wheel_joint")
