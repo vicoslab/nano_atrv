@@ -6,6 +6,13 @@ An articulated diff drive robot for robotics research.
 
 <img width="1000" height="572" alt="image" src="https://github.com/user-attachments/assets/cd57a336-9786-46e5-b9fe-c42f6f51e54d" />
 
+## Electronics Overview
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="nano_atrv/docs/figs/nano_atrv_electronics.png">
+  <source media="(prefers-color-scheme: light)" srcset="nano_atrv/docs/figs/nano_atrv_electronics_light.png">
+  <img alt="Electronics Overview." src="nano_atrv/docs/figs/nano_atrv_electronics.png">
+</picture>
 
 ## Installation
 
