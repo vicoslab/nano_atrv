@@ -14,6 +14,8 @@ An articulated diff drive robot for robotics research.
   <img alt="Electronics Overview." src="nano_atrv/docs/figs/nano_atrv_electronics.png">
 </picture>
 
+The power draw of the whole system is an average 1.5A at 12V when idle, about 2.5A when moving, which should equal about 3-5h of runtime on the 90Wh battery.
+
 ## Installation
 
 To set up the Pi 5, follow the [ubuntu image customization guide](nano_atrv/docs/pi_setup.md).
