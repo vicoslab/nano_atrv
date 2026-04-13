@@ -16,6 +16,54 @@ An articulated diff drive robot for robotics research.
 
 The power draw of the whole system is an average 1.5A at 12V when idle, about 2.5A when moving, which should equal about 3-5h of runtime on the 90Wh battery.
 
+### Network Setup
+
+* **Router (Beryl AX):** `192.168.8.1/24`
+
+* **Pi eth0:** `192.168.8.8` (connected to router)
+
+* **Pi wlan0 (AP):** `10.42.0.1/24`
+
+* **SSIDs (Router):** `NanoATRV`, `NanoATRV_5Ghz` → access Pi at `192.168.8.8`
+
+* **SSID (Pi AP):** `NanoATRV_Pi_AP` → access Pi at `10.42.0.1`
+
+### Run
+
+If everything is set up correctly, there should be a systemd service running that starts [the nano_atrv_bringup boot launch](https://github.com/vicoslab/nano_atrv/blob/jazzy/nano_atrv_bringup/launch/boot.launch.xml):  
+
+```xml
+<!-- Robot model and odometry-->
+<include file="$(find-pkg-share nano_atrv_description)/launch/description.launch.xml"/>
+
+<!-- Wheel control -->
+<include file="$(find-pkg-share nano_atrv_motor)/launch/wheel_servo.launch.xml"/> 
+
+<!-- Sensors -->
+<include file="$(find-pkg-share nano_atrv_bringup)/launch/astra2.launch.py"/>
+<include file="$(find-pkg-share nano_atrv_bringup)/launch/lidar.launch.xml"/> 
+
+<!-- Visualizaton -->
+<include file="$(find-pkg-share vizanti_server)/launch/vizanti_rws.launch.py"/>
+```
+
+This should immediately set up the basic hardware drivers, odometry, and visualization. See [the systemd doc about that](nano_atrv/docs/systemd_services.md) for more info.
+
+The web ui can be accessed at `http:/192.168.8.8:5000` (router) or `http:/10.42.0.1:5000` (Pi hotspot).
+
+Additonal launch files can be started on demand:
+
+```bash
+#slam toolbox
+ros2 launch nano_atrv_nav slam.launch.py
+
+#amcl + vicos lab map:
+ros2 launch nano_atrv_nav loc.launch.py
+
+#nav2 with pure pursuit
+ros2 launch nano_atrv_nav nav2.launch.py
+```
+
 ## Installation
 
 To set up the Pi 5, follow the [ubuntu image customization guide](nano_atrv/docs/pi_setup.md).
@@ -93,6 +141,3 @@ Modified USB port_id: 5-1
 [INFO] [1774527241.415014404] [list_device_node]: usb connect type: USB3.0
 ```
 
-### Run
-
-If everything is set up correctly, there should be a systemd service running that starts the nano_atrv_bringup boot launch. See [the systemd doc about that](nano_atrv/docs/systemd_services.md).
