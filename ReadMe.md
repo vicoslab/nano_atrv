@@ -16,7 +16,7 @@ An articulated diff drive robot for robotics research.
 
 The power draw of the whole system is an average 1.5A at 12V when idle, about 2.5A when moving, which should equal about 3-5h of runtime on the 90Wh battery.
 
-### Network Setup
+## Network Setup
 
 * **Router (Beryl AX):** `192.168.8.1/24`
 
@@ -28,7 +28,7 @@ The power draw of the whole system is an average 1.5A at 12V when idle, about 2.
 
 * **SSID (Pi AP):** `NanoATRV_Pi_AP` → access Pi at `10.42.0.1`
 
-### Run
+## Run
 
 If everything is set up correctly, there should be a systemd service running that starts [the nano_atrv_bringup boot launch](https://github.com/vicoslab/nano_atrv/blob/jazzy/nano_atrv_bringup/launch/boot.launch.xml):  
 
