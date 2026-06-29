@@ -1,0 +1,204 @@
+<?xml version="1.0"?>
+<robot name="nano_atrv">
+
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="0.4 0.3 0.15"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 0.8 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="base_link_arm">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.1"/>
+            </geometry>
+            <material name="grey">
+                <color rgba="0.5 0.5 0.5 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="base_footprint">
+        <visual>
+            <geometry>
+                <box size="0.01 0.01 0.01"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="laser">
+        <visual>
+            <geometry>
+                <box size="0.08 0.08 0.06"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="camera_link">
+        <visual>
+            <geometry>
+                <box size="0.03 0.08 0.03"/>
+            </geometry>
+            <material name="red">
+                <color rgba="0.8 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="left_wheel">
+        <visual>
+            <geometry>
+                <box size="0.1 0.1 0.1"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+    </link>
+
+    <link name="right_wheel">
+        <visual>
+            <geometry>
+                <box size="0.1 0.1 0.1"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+    </link>
+
+    <link name="right_wheel_link">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="left_wheel_link">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="rear_wheel_link">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="left_steer_link">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="right_steer_link">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <link name="rear_steer_link">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="base_footprint_to_base_link" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0.18" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="base_link_to_laser" type="fixed">
+        <parent link="base_link"/>
+        <child link="laser"/>
+        <origin xyz="0 0 0.23" rpy="0 3.1415 0"/>
+    </joint>
+
+    <joint name="base_link_to_camera_link" type="fixed">
+        <parent link="base_link"/>
+        <child link="camera_link"/>
+        <origin xyz="0.08 0.05 0.285" rpy="0 0.8029 0"/>
+    </joint>
+
+    <joint name="base_link_to_arm" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_link_arm"/>
+        <origin xyz="0.145 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="base_link_to_left_steer" type="fixed">
+        <parent link="base_link"/>
+        <child link="left_steer_link"/>
+        <origin xyz="0.175 0.1775 -0.1" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="base_link_to_right_steer" type="fixed">
+        <parent link="base_link"/>
+        <child link="right_steer_link"/>
+        <origin xyz="0.175 -0.1775 -0.1" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="base_link_to_rear_steer" type="fixed">
+        <parent link="base_link"/>
+        <child link="rear_steer_link"/>
+        <origin xyz="-0.175 0 -0.1" rpy="0 0 0"/>
+    </joint>
+
+
+    <joint name="left_steer_joint" type="revolute">
+        <parent link="left_steer_link"/>
+        <child link="left_wheel_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="2"/>
+    </joint>
+
+    <joint name="right_steer_joint" type="revolute">
+        <parent link="right_steer_link"/>
+        <child link="right_wheel_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="2"/>
+    </joint>
+
+    <joint name="rear_steer_joint" type="revolute">
+        <parent link="rear_steer_link"/>
+        <child link="rear_wheel_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-3.1415" upper="3.1415" effort="10" velocity="2"/>
+    </joint>
+
+
+    <joint name="left_wheel_joint" type="continuous">
+        <parent link="left_wheel_link"/>
+        <child link="left_wheel"/>
+        <origin xyz="0 0.08 0" rpy="0 0 1.5708"/>
+        <axis xyz="-1 0 0"/>
+    </joint>
+
+    <joint name="right_wheel_joint" type="continuous">
+        <parent link="right_wheel_link"/>
+        <child link="right_wheel"/>
+        <origin xyz="0 -0.08 0" rpy="0 0 -1.5708"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+</robot>
