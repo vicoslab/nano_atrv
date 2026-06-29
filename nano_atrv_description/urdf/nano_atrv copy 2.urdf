@@ -1,0 +1,670 @@
+<?xml version="1.0"?>
+<robot name="nano_atrv">
+
+    <link name="base_link">
+        <visual>
+            <origin xyz="-0.15 0 0" rpy="0 0 -1.5708" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/vehicle/mainbody.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="silver">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+		<visual>
+            <origin xyz="-0.045 0.65 -0.05" rpy="1.5708 0 1.5708" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/vehicle/servomount_rear.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="red">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+		<visual>
+            <origin xyz="0.945 0.17 -0.145" rpy="-1.5708 0 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/vehicle/servomount_front_l.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="red">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+		<visual>
+            <origin xyz="0.945 -0.17 -0.145" rpy="1.5708 0 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/vehicle/servomount_front_r.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="red">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+
+        
+        <!-- RODS -->
+        <visual>
+            <origin xyz="-0.04 0 0.21" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.005" length="0.26" />
+            </geometry>
+            <material name="silver">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+        <visual>
+            <origin xyz="0.08 0.1 0.21" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.005" length="0.26" />
+            </geometry>
+            <material name="silver">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+        <visual>
+            <origin xyz="0.08 -0.1 0.21" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.005" length="0.26" />
+            </geometry>
+            <material name="silver">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+        <!-- Motorji front right -->
+        <visual>
+            <origin xyz="0.164 0.1 -0.03" rpy="0 0 1.5708" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/sts3215_03a_v1.stl" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+
+        <visual>
+            <origin xyz="0.164 -0.1 -0.03" rpy="0 0 -1.5708" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/sts3215_03a_v1.stl" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+
+        <!-- Motor back -->
+        <visual>
+            <origin xyz="-0.16 -0.003 0.035" rpy="0 0 3.14159265" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/sts3215_03a_v1.stl" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+
+        <visual>
+            <origin xyz="0.02 0 0.34" rpy="0 0 0" />
+            <geometry>
+            <box size="0.13 0.21 0.005" />
+            </geometry>
+            <material name="light_gray">
+            <color rgba="0.8 0.8 0.8 1.0" />
+            </material>
+        </visual>
+
+        <!-- Router -->
+        <visual>
+            <origin xyz="-0.01 0.03 0.37" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.005" length="0.05" />
+            </geometry>
+            <material name="silver">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+        <visual>
+            <origin xyz="-0.01 -0.03 0.37" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.005" length="0.05" />
+            </geometry>
+            <material name="silver">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+        <visual>
+            <origin xyz="0.02 0.03 0.37" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.005" length="0.05" />
+            </geometry>
+            <material name="silver">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+        <visual>
+            <origin xyz="0.02 -0.03 0.37" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.005" length="0.05" />
+            </geometry>
+            <material name="silver">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+
+        <visual>
+            <origin xyz="0.04 -0.05 0.39" rpy="0 0 1.5708" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/vehicle/router.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="lightblue">
+                <color rgba="0.5 0.65 0.8 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="base_link_arm"/>
+    <link name="base_footprint"/>
+    <link name="laser"/>
+    <link name="camera_link">
+        <visual>
+            <origin xyz="-0.075 -0.11 0.04" rpy="1.5708 0 1.5708" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/vehicle/camera.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="red"/>
+        </visual>
+    </link>
+
+    <link name="left_wheel">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 1.5708 0" />
+            <geometry>
+                <cylinder radius="0.075" length="0.05" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="right_wheel">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 1.5708 0" />
+            <geometry>
+                <cylinder radius="0.075" length="0.05" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="rear_wheel">
+        <visual>
+            <origin xyz="-0.05 0 0" rpy="0 1.5708 0" />
+            <geometry>
+                <cylinder radius="0.05" length="0.05" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+
+        <visual>
+            <origin xyz="0.05 0 0.0" rpy="0 1.5708 0" />
+            <geometry>
+                <cylinder radius="0.05" length="0.05" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="right_wheel_link"/>
+    <link name="left_wheel_link"/>
+    
+    <link name="rear_wheel_link">
+        <visual>
+            <origin xyz="0.0 0.2 0.78" rpy="0 -1.5708 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/vehicle/wheel_rear_yoke.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="dark_grey">
+                <color rgba="0.3 0.3 0.3 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="left_steer_link"/>
+    <link name="right_steer_link"/>
+    <link name="rear_steer_link"/>
+
+    <link name="arm_base_link">
+        <gazebo>
+            <material>Gazebo/Grey</material>
+        </gazebo>
+    </link>
+
+    <material name="brightyellow">
+        <color rgba="1.0 0.992 0.004 1.0" />
+    </material>
+    <material name="red">
+        <color rgba="1.0 0.0 0.0 1"/>
+    </material>
+
+    <link name="arm_Base">
+        <inertial>
+            <origin xyz="-2.45960666746703E-07 0.0311418169687909 0.0175746661003382" rpy="0 0 0" />
+            <mass value="0.193184127927598" />
+            <inertia ixx="0.000137" ixy="0.0" ixz="0.0" iyy="0.000169" iyz="0.0" izz="0.000145" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0.02" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.05" length="0.04" />
+            </geometry>
+            <material name="brightyellow"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0.02" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.05" length="0.04" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="arm_Shoulder_Rotation_Pitch">
+        <inertial>
+            <origin xyz="-9.07886224712597E-05 0.0590971820568318 0.031089016892169" rpy="0 0 0" />
+            <mass value="0.119226314127197" />
+            <inertia ixx="5.9E-05" ixy="0.0" ixz="0.0" iyy="3.2E-05" iyz="0.0" izz="5.8E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0.05 0" rpy="1.5708 0 0" />
+            <geometry>
+                <cylinder radius="0.03" length="0.1" />
+            </geometry>
+            <material name="brightyellow"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0.05 0" rpy="1.5708 0 0" />
+            <geometry>
+                <cylinder radius="0.03" length="0.1" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="arm_Upper_Arm">
+        <inertial>
+            <origin xyz="-1.7205170190925E-05 0.0701802156327694 0.00310545118155671" rpy="0 0 0" />
+            <mass value="0.162409284599177" />
+            <inertia ixx="0.000167" ixy="0.0" ixz="0.0" iyy="7.0E-05" iyz="0.0" izz="0.000213" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0.069 -0.013" rpy="1.5708 0 -1.5708" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/upper_arm_so101_v1.stl" />
+            </geometry>
+            <material name="brightyellow"/>
+        </visual>
+        <visual>
+        <origin xyz="0 0.115 0.015" rpy="0 -1.5708 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/sts3215_03a_v1.stl" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0.05 0" rpy="1.5708 0 0" />
+            <geometry>
+                <cylinder radius="0.025" length="0.11" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="arm_Lower_Arm">
+        <inertial>
+            <origin xyz="-0.00339603710186651 0.00137796353960074 0.0768006751156044" rpy="0 0 0" />
+            <mass value="0.147967774582291" />
+            <inertia ixx="0.000105" ixy="0.0" ixz="0.0" iyy="0.000138" iyz="0.0" izz="5.0E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0.034 0.065" rpy="0 1.5708 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/under_arm_so101_v1.stl" />
+            </geometry>
+            <material name="brightyellow"/>
+        </visual>
+        <visual>
+            <origin xyz="0 0 0.12" rpy="0 -1.5708 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/sts3215_03a_v1.stl" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0.06" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.02" length="0.13" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="arm_Wrist_Pitch_Roll">
+        <inertial>
+            <origin xyz="-0.00852653127372418 -0.0352278997897927 -2.34622481569413E-05" rpy="0 0 0" />
+            <mass value="0.066132067097723" />
+            <inertia ixx="1.9E-05" ixy="0.0" ixz="0.0" iyy="2.3E-05" iyz="0.0" izz="3.4E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 -0.025 0" rpy="1.5708 0 3.14159265359" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/wrist_roll_pitch_so101_v2.stl" />
+            </geometry>
+            <material name="brightyellow"/>
+        </visual>
+        <visual>
+            <origin xyz="-0.015 -0.04 0" rpy="-1.5708 0 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/sts3215_03a_v1.stl" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 -0.03 0" rpy="1.5708 0 0" />
+            <geometry>
+                <cylinder radius="0.02" length="0.06" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="arm_Fixed_Gripper">
+        <inertial>
+            <origin xyz="0.00552376906426563 -0.0280167153359021 0.000483582592841092" rpy="0 0 0" />
+            <mass value="0.0929859131176897" />
+            <inertia ixx="4.3E-05" ixy="0.0" ixz="0.0" iyy="3.0E-05" iyz="0.0" izz="5.0E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="-1.5708 0 3.14159265359" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/wrist_roll_follower_so101_v1.stl" />
+            </geometry>
+            <material name="brightyellow"/>
+        </visual>
+        <visual>
+        <origin xyz="-0.01 -0.025 0" rpy="0 3.141592 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/sts3215_03a_v1.stl" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="-1.5708 0 3.14159265359" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/wrist_roll_follower_so101_v1.stl" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="arm_Moving_Jaw">
+        <inertial>
+            <origin xyz="-0.00161744605468241 -0.0303472584046471 0.000449645961853651" rpy="0 0 0" />
+            <mass value="0.0202443794940372" />
+            <inertia ixx="1.1E-05" ixy="0.0" ixz="0.0" iyy="3.0E-06" iyz="0.0" izz="8.9E-06" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/moving_jaw_so101_v1.stl" />
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/moving_jaw_so101_v1.stl" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="arm_End_Effector">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.01 0.01 0.01" />
+            </geometry>
+            <material name="red"/>
+        </visual>
+    </link>
+
+    <joint name="base_footprint_to_base_link" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0.18" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="base_link_to_laser" type="fixed">
+        <parent link="base_link"/>
+        <child link="laser"/>
+        <origin xyz="0 0 0.23" rpy="0 3.1415 0"/>
+    </joint>
+
+    <joint name="base_link_to_camera_link" type="fixed">
+        <parent link="base_link"/>
+        <child link="camera_link"/>
+        <origin xyz="0.08 0.05 0.285" rpy="0 0.8029 0"/>
+    </joint>
+
+    <joint name="base_link_to_arm" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_link_arm"/>
+        <origin xyz="0.145 0 0" rpy="0 0 1.5708"/>
+    </joint>
+
+    <joint name="base_link_arm_to_arm_base" type="fixed">
+        <parent link="base_link_arm"/>
+        <child link="arm_base_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="base_link_to_left_steer" type="fixed">
+        <parent link="base_link"/>
+        <child link="left_steer_link"/>
+        <origin xyz="0.175 0.1775 -0.1" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="base_link_to_right_steer" type="fixed">
+        <parent link="base_link"/>
+        <child link="right_steer_link"/>
+        <origin xyz="0.175 -0.1775 -0.1" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="base_link_to_rear_steer" type="fixed">
+        <parent link="base_link"/>
+        <child link="rear_steer_link"/>
+        <origin xyz="-0.175 0 -0.1" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="left_steer_joint" type="revolute">
+        <parent link="left_steer_link"/>
+        <child link="left_wheel_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="2"/>
+    </joint>
+
+    <joint name="right_steer_joint" type="revolute">
+        <parent link="right_steer_link"/>
+        <child link="right_wheel_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="10" velocity="2"/>
+    </joint>
+
+    <joint name="rear_steer_joint" type="revolute">
+        <parent link="rear_steer_link"/>
+        <child link="rear_wheel_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-3.1415" upper="3.1415" effort="10" velocity="2"/>
+    </joint>
+
+    <link name="left_wheel_block">
+        <visual>
+            <origin xyz="-0.39 -0.06 -0.025" rpy="0 3.14159265359 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/vehicle/wheel_front_mount.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="red">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+        
+        <visual>
+            <origin xyz="-0.01 -0.085 0.085" rpy="1.5708 1.5708 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/sts3215_03a_v1.stl" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+    </link>
+    <joint name="left_wheel_link_to_block" type="fixed">
+        <parent link="left_wheel_link"/>
+        <child link="left_wheel_block"/>
+        <origin xyz="0 0.055 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="right_wheel_block">
+        <visual>
+            <origin xyz="0.37 0.06 -0.025" rpy="0 3.14159265359 3.14159265359" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/vehicle/wheel_front_mount.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="red">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+
+        <visual>
+            <origin xyz="-0.01 0.085 0.085" rpy="1.5708 1.5708 0" />
+            <geometry>
+                <mesh filename="package://nano_atrv_description/meshes/SO101_arm/sts3215_03a_v1.stl" />
+            </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="right_wheel_link_to_block" type="fixed">
+        <parent link="right_wheel_link"/>
+        <child link="right_wheel_block"/>
+        <origin xyz="0 -0.055 0" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="left_wheel_joint" type="continuous">
+        <parent link="left_wheel_link"/>
+        <child link="left_wheel"/>
+        <origin xyz="0 0.08 0" rpy="0 0 1.5708"/>
+        <axis xyz="-1 0 0"/>
+    </joint>
+
+    <joint name="right_wheel_joint" type="continuous">
+        <parent link="right_wheel_link"/>
+        <child link="right_wheel"/>
+        <origin xyz="0 -0.08 0" rpy="0 0 -1.5708"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <joint name="rear_wheel_joint" type="continuous">
+        <parent link="rear_wheel_link"/>
+        <child link="rear_wheel"/>
+        <origin xyz="0 0 0" rpy="0 0 1.5708"/>
+        <axis xyz="-1 0 0"/>
+    </joint>
+
+    <joint name="arm_base_link_joint" type="fixed">
+        <parent link="arm_base_link"/>
+        <child link="arm_Base"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="arm_Shoulder_Rotation" type="revolute">
+        <origin xyz="0 -0.0452 0.0165" rpy="1.5708 0 0" />
+        <parent link="arm_Base" />
+        <child link="arm_Shoulder_Rotation_Pitch" />
+        <axis xyz="0 -1 0" />
+        <limit effort="1000" lower="-1.96" upper="1.96" velocity="5.0"/>
+        <dynamics damping="0.1"/>
+    </joint>
+
+    <joint name="arm_Shoulder_Pitch" type="revolute">
+        <origin xyz="0 0.1025 0.0306" rpy="0 0 0" />
+        <parent link="arm_Shoulder_Rotation_Pitch" />
+        <child link="arm_Upper_Arm" />
+        <axis xyz="1 0 0" />
+        <limit effort="1000" lower="-1.745" upper="1.745" velocity="5.0"/>
+        <dynamics damping="0.1"/>
+    </joint>
+
+    <joint name="arm_Elbow" type="revolute">
+        <origin xyz="0 0.11257 0.028" rpy="0 0 0" />
+        <parent link="arm_Upper_Arm" />
+        <child link="arm_Lower_Arm" />
+        <axis xyz="1 0 0" />
+        <limit effort="1000" lower="-1.5" upper="1.5" velocity="5.0"/>
+        <dynamics damping="0.1"/>
+    </joint>
+
+    <joint name="arm_Wrist_Pitch" type="revolute">
+        <origin xyz="0 0.0052 0.1349" rpy="-1.57079 0 0" />
+        <parent link="arm_Lower_Arm" />
+        <child link="arm_Wrist_Pitch_Roll" />
+        <axis xyz="1 0 0" />
+        <limit effort="1000" lower="-1.658" upper="1.658" velocity="5.0"/>
+        <dynamics damping="0.1"/>
+    </joint>
+
+    <joint name="arm_Wrist_Roll" type="revolute">
+        <origin xyz="0 -0.0601 0" rpy="0 1.57079 0" />
+        <parent link="arm_Wrist_Pitch_Roll" />
+        <child link="arm_Fixed_Gripper" />
+        <axis xyz="0 1 0" />
+        <limit effort="1000" lower="-2.75" upper="2.75" velocity="5.0"/>
+        <dynamics damping="0.1"/>
+    </joint>
+
+    <joint name="arm_Gripper" type="revolute">
+        <origin xyz="-0.0202 -0.0244 0" rpy="3.1416 0 3.1416" />
+        <parent link="arm_Fixed_Gripper" />
+        <child link="arm_Moving_Jaw" />
+        <axis xyz="0 0 1" />
+        <limit effort="1000" lower="-0.1792" upper="1.5708" velocity="5.0"/>
+        <dynamics damping="0.1"/>
+    </joint>
+
+    <joint name="arm_End_Effector_Joint" type="fixed">
+        <parent link="arm_Fixed_Gripper"/>
+        <child link="arm_End_Effector"/>
+        <origin xyz="0.0 -0.09 0.0" rpy="0 0 0"/>
+    </joint>
+
+</robot>
